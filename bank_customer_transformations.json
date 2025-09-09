@@ -1,0 +1,99 @@
+{
+    "metadata": {
+        "pipeline_name": "bank_customer_etl",
+        "source_system": "core_banking",
+        "created_at": "2025-09-09T16:30:00Z"
+    },
+    "raw_data": [
+        {
+            "customer_id": "CUST001",
+            "name": "Rahul Sharma",
+            "dob": "1989-04-15",
+            "email": "rahul.sharma@example.com",
+            "phone": "+91-9876543210",
+            "account_number": "1234567890",
+            "balance": "55000.75",
+            "branch": "Pune",
+            "created_date": "2021-06-01",
+            "status": "active"
+        },
+        {
+            "customer_id": "CUST002",
+            "name": "Anjali Verma",
+            "dob": "1995-09-20",
+            "email": "anjali.verma@example.com",
+            "phone": "9876501234",
+            "account_number": "2345678901",
+            "balance": "7500.00",
+            "branch": "Mumbai",
+            "created_date": "2019-04-18",
+            "status": "inactive"
+        },
+        {
+            "customer_id": "CUST003",
+            "name": "Suresh Patil",
+            "dob": "1978-12-05",
+            "email": "suresh.patil@example.com",
+            "phone": "+91-9123456789",
+            "account_number": "3456789012",
+            "balance": "120000.00",
+            "branch": "Delhi",
+            "created_date": "2023-01-10",
+            "status": "active"
+        }
+    ],
+    "transformations": [
+        {
+            "step": 1,
+            "operation": "mask_column",
+            "details": {
+                "columns": [
+                    "account_number",
+                    "phone"
+                ],
+                "mask_type": "partial",
+                "mask_format": "XXXXXX####"
+            }
+        },
+        {
+            "step": 2,
+            "operation": "cast_column",
+            "details": {
+                "column": "balance",
+                "from_type": "string",
+                "to_type": "double"
+            }
+        },
+        {
+            "step": 3,
+            "operation": "derive_column",
+            "details": {
+                "new_column": "age",
+                "formula": "current_date - dob (in years)"
+            }
+        },
+        {
+            "step": 4,
+            "operation": "filter_rows",
+            "details": {
+                "condition": "status = 'active' AND balance > 10000"
+            }
+        },
+        {
+            "step": 5,
+            "operation": "standardize_email",
+            "details": {
+                "column": "email",
+                "rule": "lowercase_and_trim"
+            }
+        },
+        {
+            "step": 6,
+            "operation": "rename_column",
+            "details": {
+                "old_name": "name",
+                "new_name": "customer_name"
+            }
+        }
+    ]
+}
